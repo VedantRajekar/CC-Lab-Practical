@@ -1,0 +1,38 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+int yylex(void);
+void yyerror(const char *s);
+%}
+%token NUMBER
+%token PLUS MINUS MULT DIV POW
+%token EOL
+%%
+input
+    : /* empty */
+    | input line
+    ;
+line
+    : EOL
+    | expr EOL        { printf("%d\n", $1); }
+    ;
+expr
+    : NUMBER
+    | expr expr PLUS  { $$ = $1 + $2; }
+    | expr expr MINUS { $$ = $1 - $2; }
+    | expr expr MULT  { $$ = $1 * $2; }
+    | expr expr DIV   { if ($2 == 0) { yyerror("division by zero"); YYERROR; } else $$ = $1 / $2; }
+    | expr expr POW   {
+                          int base = $1, exp = $2, res = 1;
+                          if (exp < 0) { yyerror("negative exponent"); YYERROR; }
+                          while (exp--) res *= base;
+                          $$ = res;
+                      }
+    ;
+%%
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+}
+int main(void) {
+    return yyparse();
+}
