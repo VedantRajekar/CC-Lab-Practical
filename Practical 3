@@ -1,0 +1,15 @@
+%{
+int count = 0;
+%}
+
+%%
+[Aa][a-zA-Z0-9_]*    { count++; }
+[^ \t\nA-Za-z0-9_]+  ;
+.|\n                ;
+%%
+
+int main() {
+    yylex();
+    printf("Number of words starting with 'A' or 'a': %d\n", count);
+    return 0;
+}
