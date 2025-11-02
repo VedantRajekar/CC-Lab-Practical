@@ -1,0 +1,19 @@
+%{
+#include "y.tab.h"  /* Token definitions from Bison */
+#include <stdlib.h>
+%}
+
+%%
+
+[0-9]+        { yylval = atoi(yytext); return NUMBER; }
+[ \t]+        ;                 /* Skip spaces and tabs */
+\n            { return EOL; }   /* End of a postfix expression */
+"\+"          { return PLUS; }
+"-"           { return MINUS; }
+"\*"          { return MULT; }
+"/"           { return DIV; }
+"\^"          { return POW; }
+
+.             { return yytext[0]; }  /* Catch-all for unexpected chars */
+
+%%
