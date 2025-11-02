@@ -1,0 +1,38 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int t = 1;
+extern char *yytext;   
+int yylex();            
+int yyerror(char *s);   
+%}
+
+%token ID
+
+%%
+E : E '+' T { printf("t%d = t%d + t%d\n", t, t-2, t-1); t++; }
+  | E '-' T { printf("t%d = t%d - t%d\n", t, t-2, t-1); t++; }
+  | T
+  ;
+
+T : T '*' F { printf("t%d = t%d * t%d\n", t, t-2, t-1); t++; }
+  | T '/' F { printf("t%d = t%d / t%d\n", t, t-2, t-1); t++; }
+  | F
+  ;
+
+F : ID { printf("t%d = %c\n", t++, yytext[0]); }
+  ;
+%%
+
+int main() {
+    printf("Enter an arithmetic expression:\n");
+    yyparse();
+    return 0;
+}
+
+int yyerror(char *s) {   /* ← Fix: correct function signature */
+    printf("Error: %s\n", s);
+    return 0;
+}
+
