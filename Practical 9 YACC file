@@ -1,0 +1,44 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex();
+void yyerror(const char *s);
+%}
+
+%token FOR ID NUM
+%token LPAREN RPAREN SEMICOLON
+%token LT GT ASSIGN PLUS MINUS MUL DIV
+%left PLUS MINUS
+%left MUL DIV
+
+%%
+
+stmt: FOR LPAREN init SEMICOLON cond SEMICOLON incr RPAREN
+       { printf("Valid FOR loop syntax\n"); }
+     ;
+init: ID ASSIGN expr
+    ;
+cond: expr relop expr
+    ;
+incr: ID ASSIGN expr
+    ;
+expr: ID
+    | NUM
+    | expr PLUS expr
+    | expr MINUS expr
+    | expr MUL expr
+    | expr DIV expr
+    ;
+relop: LT | GT ;
+
+%%
+
+void yyerror(const char *s) {
+    printf("Error: %s\n", s);
+}
+int main() {
+    printf("Enter a FOR loop:\n");
+    yyparse();
+    return 0;
+}
