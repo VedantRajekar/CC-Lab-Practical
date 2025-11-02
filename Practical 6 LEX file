@@ -1,0 +1,11 @@
+%{
+#include "y.tab.h"
+%}
+
+%%
+.*com$     { return COM_LINE; }
+.*\n       { /* ignore other lines */ }
+%%
+
+int yywrap(void) { return 1; }
+
