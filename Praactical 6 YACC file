@@ -1,0 +1,29 @@
+%{
+#include <stdio.h>
+
+/* Forward declarations to avoid implicit declaration warnings */
+int yylex(void);
+void yyerror(const char *s);
+%}
+
+%token COM_LINE
+
+%%
+input:
+    /* empty */
+  | input line
+  ;
+
+line:
+    COM_LINE   { printf("Line ends with 'com'\n"); }
+  ;
+%%
+
+int main(void) {
+    return yyparse();
+}
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+}
+
